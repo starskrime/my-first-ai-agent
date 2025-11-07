@@ -21,8 +21,8 @@ A lightweight Python chatbot powered by Claude (Anthropic) with dynamic tool cal
 
 1. **Clone the repository**:
    ```bash
-   git clone <your-repo-url>
-   cd research_agent
+   git clone git@github.com:starskrime/my-first-ai-agent.git
+   cd my-first-ai-agent
    ```
 
 2. **Install dependencies**:
