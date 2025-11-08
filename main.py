@@ -1,10 +1,7 @@
-import datetime
-import math
-import json
 from dotenv import load_dotenv
 from langchain_anthropic import ChatAnthropic
 from langchain_core.messages import HumanMessage, AIMessage, ToolMessage, SystemMessage
-from langchain_core.tools import tool
+from tools import ALL_TOOLS
 
 load_dotenv()
 
@@ -14,6 +11,7 @@ SYSTEM_PROMPT = """You are a helpful AI assistant with access to tools.
 You can:
 - Get the current time when needed
 - Perform mathematical calculations
+- Search for airline tickets between destinations with specific dates
 - and much more using LLM capabilities
 
 Always be concise and helpful. Use tools when appropriate to provide accurate information."""
@@ -21,21 +19,8 @@ Always be concise and helpful. Use tools when appropriate to provide accurate in
 # Initialize LLM
 llm = ChatAnthropic(model="claude-sonnet-4-5-20250929", temperature=0.7)
 
-# Define tools using @tool decorator
-@tool
-def tool_time() -> str:
-    """Return current local time string in format YYYY-MM-DD HH:MM:SS."""
-    return datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-
-@tool
-def tool_calc(expression: str) -> str:
-    """A tiny safe-ish calculator. Handles + - * / ** () and math functions."""
-    allowed_names = {k: getattr(math, k) for k in dir(math) if not k.startswith("_")}
-    allowed_names.update({"__builtins__": {}})
-    return str(eval(expression, allowed_names, {}))
-
 # Create tool map for dynamic invocation
-TOOL_MAP = {tool.name: tool for tool in [tool_time, tool_calc]}
+TOOL_MAP = {tool.name: tool for tool in ALL_TOOLS}
 
 # Bind tools to LLM
 llm_with_tools = llm.bind_tools(list(TOOL_MAP.values()))
