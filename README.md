@@ -25,7 +25,7 @@ A powerful Python chatbot powered by Claude (Anthropic) with dynamic tool callin
 1. **Clone the repository**:
    ```bash
    git clone git@github.com:starskrime/my-first-ai-agent.git
-   cd research_agent
+   cd my-first-ai-agent
    ```
 
 2. **Install dependencies**:
