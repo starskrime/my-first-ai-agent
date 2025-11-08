@@ -91,12 +91,11 @@ You: quit
 ## Project Structure
 
 ```
-research_agent/
+my-first-ai-agent/
 ├── main.py              # Main application with chat loop
 ├── tools.py             # Tool definitions (time, calc, flight search)
 ├── requirements.txt     # Python dependencies
 ├── .env                 # Environment variables (not in repo)
-├── test_serpapi.py      # SerpApi connection test script
 └── README.md            # This file
 ```
 
@@ -112,6 +111,7 @@ SYSTEM_PROMPT = """You are a helpful AI assistant with access to tools.
 You can:
 - Get the current time when needed
 - Perform mathematical calculations
+- Search for airline tickets between destinations with specific dates
 - and much more using LLM capabilities
 
 Always be concise and helpful. Use tools when appropriate to provide accurate information."""
