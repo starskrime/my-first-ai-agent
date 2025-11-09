@@ -305,7 +305,7 @@ All APIs offer generous free tiers perfect for development and demos:
 
 ## 📝 What's New
 
-### v3.0 - FastMCP Integration & Proper Client-Server Architecture (Current)
+### v3.0 - FastMCP Integration
 - Added MCPServer integration
 - Added News and Weather APIs
 - Added smarter travel planning instructions (Flight+News+Weather)
