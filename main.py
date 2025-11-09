@@ -162,13 +162,32 @@ if __name__ == "__main__":
             response = chat(user_input)
 
             # Create border around response
+            import unicodedata
+
+            def display_width(s):
+                """Calculate display width accounting for wide characters (emojis, etc.)"""
+                width = 0
+                for char in s:
+                    # East Asian Wide and Fullwidth characters take 2 spaces
+                    if unicodedata.east_asian_width(char) in ('F', 'W'):
+                        width += 2
+                    # Emojis and other special characters typically take 2 spaces
+                    elif ord(char) > 0x1F300:  # Emoji range starts here
+                        width += 2
+                    else:
+                        width += 1
+                return width
+
             response_lines = response.split('\n')
-            max_length = max(len(line) for line in response_lines) if response_lines else 0
-            border_width = max_length + 4  # Add padding
+            max_display_width = max(display_width(line) for line in response_lines) if response_lines else 0
+            border_width = max_display_width + 4  # Add padding
 
             print("\n" + "#" * border_width)
             for line in response_lines:
-                print(f"# {line.ljust(max_length)} #")
+                # Calculate padding needed
+                line_width = display_width(line)
+                padding_needed = max_display_width - line_width
+                print(f"# {line}{' ' * padding_needed} #")
             print("#" * border_width + "\n")
 
     finally:
