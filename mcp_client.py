@@ -207,6 +207,56 @@ class FastMCPClient:
         """
         return self.available_tools
 
+    def create_mcp_tool(self, tool_def: Dict[str, Any]):
+        """Create a LangChain tool wrapper for an MCP tool.
+
+        Args:
+            tool_def: Tool definition dictionary from MCP server
+
+        Returns:
+            LangChain StructuredTool instance
+        """
+        from langchain_core.tools import StructuredTool
+        from pydantic import BaseModel, create_model, Field
+        from typing import Type
+
+        tool_name = tool_def['name']
+        tool_description = tool_def.get('description', 'MCP tool')
+        input_schema = tool_def.get('inputSchema', {})
+
+        # Extract properties from JSON Schema
+        properties = input_schema.get('properties', {})
+        required = input_schema.get('required', [])
+
+        # Build Pydantic model fields dynamically
+        fields = {}
+        for prop_name, prop_def in properties.items():
+            prop_type = str  # Default to string
+            prop_description = prop_def.get('description', '')
+
+            # Determine if field is required
+            if prop_name in required:
+                fields[prop_name] = (prop_type, Field(..., description=prop_description))
+            else:
+                fields[prop_name] = (prop_type, Field(None, description=prop_description))
+
+        # Create Pydantic model dynamically
+        ArgsSchema: Type[BaseModel] = create_model(f"{tool_name}Args", **fields)
+
+        # Create wrapper function
+        def mcp_tool_func(**kwargs) -> str:
+            return self.call_tool(tool_name, kwargs)
+
+        # Create StructuredTool with explicit schema
+        wrapped_tool = StructuredTool.from_function(
+            func=mcp_tool_func,
+            name=tool_name,
+            description=tool_description,
+            args_schema=ArgsSchema
+        )
+
+        return wrapped_tool
+
     def stop(self) -> None:
         """Stop the MCP server process"""
         if self.process:

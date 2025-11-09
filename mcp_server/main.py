@@ -13,6 +13,7 @@ from fastmcp import FastMCP
 # Import tool functions
 from weather import get_weather
 from news import get_local_news
+from flight import search_flights
 
 # Initialize FastMCP server
 mcp = FastMCP("my-first-mcp-server")
@@ -22,6 +23,9 @@ mcp.tool()(get_weather)
 
 # Register news tool
 mcp.tool()(get_local_news)
+
+# Register flight tool
+mcp.tool()(search_flights)
 
 # Run the server when called directly
 if __name__ == "__main__":
